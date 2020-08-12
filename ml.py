@@ -67,7 +67,7 @@ test_days = 3
 plot_num = 1
 num_outliers = 0
 new_array = []
-plt.figure(figsize=(500, 1250))
+plt.figure(figsize=(20, 140))
 
 class ml:
 
@@ -223,5 +223,5 @@ class ml:
 print(num_outliers)
 ml = ml()
 ml.outlier(None)
-plt.show()
+plt.savefig('outliers.png')
   
