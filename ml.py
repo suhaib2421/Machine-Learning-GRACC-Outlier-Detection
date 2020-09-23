@@ -127,15 +127,19 @@ class ml:
       date_array = np.apply_along_axis(convert_datetime, 1, date_array)
       #print(new_array[:88])
       
-      np_array = [] # training array
+      train_array = [] # training array
       test_array = []
       # Split the data into test and train
       for row in date_array:
         if row[0] < (datetime.datetime.now() - datetime.timedelta(days=test_days*7)):  
-          np_array.append(row)
+          train_array.append(row)
+          if row[0] is None:
+            train_array.append(0)
         else:
-          test_array.append(row)  
-      np_array = np.array(np_array)
+          test_array.append(row)
+          if row[0] is None:
+            test_array.append(0)  
+      train_array = np.array(train_array)
       test_array = np.array(test_array)
 
       # If we don't have enough test days, then ignore this CE
@@ -153,14 +157,13 @@ class ml:
       #print("Testing against array of size:", np_array.shape)
       iso_forest = IsolationForest(contamination=outliers_fraction, random_state=42)
       try:
-        y_pred = iso_forest.fit(np_array[:][:,[1,2]]).predict(test_array[:][:,[1,2]])
+        y_pred = iso_forest.fit(train_array[:][:,[1,2]]).predict(test_array[:][:,[1,2]])
       except:
-        print("Failed array:", np_array)
+        print("Failed array:", train_array)
         print("Test array:", test_array)
         raise
         continue
       colors = np.array(['#377eb8', '#ff7f00'])
-      #print(y_pred)
       outlier = False
 
       # Converting from the numbers back to the VO names
@@ -168,18 +171,15 @@ class ml:
       outlier_vos = []
       for idx, pred in enumerate(y_pred):
         if pred == -1:
-          #print(inverted_voname_map)
-          #print(voname_map)
           outlier_vo = test_array[idx][1]
-          #print("Outlier:", interested_probe, "VOName:", outlier_vo)
           outlier_vos.append(outlier_vo)
           outlier = True
       
       outlier_vos = set(outlier_vos)
       # Add the "outlier" column to the arrays
-      np_array = np.append(np_array, np.ones([len(np_array),1], dtype=np.int8),1)
+      train_array = np.append(train_array, np.ones([len(train_array),1], dtype=np.int8),1)
       test_array = np.append(test_array, y_pred[...,None], 1)
-      total_array = np.concatenate((np_array, test_array))
+      total_array = np.concatenate((train_array, test_array))
       
       for outlier_vo in outlier_vos:
 
@@ -187,15 +187,13 @@ class ml:
         # Create the graphing array
         for row in total_array:
           if int(row[1]) != outlier_vo:
-            #print(row[1], outlier_vo)
+
             continue
           to_graph.append(row)
             
 
         to_graph = np.array(to_graph)
-        #print(to_graph.shape)
         ax_now = plt.subplot(30, 3, plot_num)
-        #print(to_graph[:, 2])
 
         #new_plt = ax_now.scatter(date_array[:, 0].astype("datetime64[ns]"), date_array[:, 2])# , s=10, color=colors[(to_graph[:, 3].astype(int) + 1) // 2])
         new_plt = ax_now.bar(to_graph[:, 0].astype("datetime64[ns]"), to_graph[:, 2], width=0.99, color=colors[(to_graph[:, 3].astype(int) + 1) // 2]) # width=3
@@ -213,15 +211,9 @@ class ml:
 
         plot_num += 1
         num_outliers += 1
-        
-        #return voname_map
-
-      #print(num_outliers)
-    
 
 
 print(num_outliers)
 ml = ml()
 ml.outlier(None)
-plt.savefig('outliers.png')
-  
+plt.savefig('outliers.png', bbox_inches='tight', dpi=100)
