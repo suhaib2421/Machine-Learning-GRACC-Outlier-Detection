@@ -54,12 +54,13 @@ def metrics():
     probes[bucket['key']] = pd.DataFrame(columns=['Timestamp', 'VO', 'CoreHours'])
     for voname in bucket['vonames']['buckets']:
       for endtime in voname['EndTime']['buckets']:
-        #print({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']})
         probes[bucket['key']] = probes[bucket['key']].append({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']}, ignore_index=True)
 
   return probes
 
+
 all_ces = metrics()
+
 
 from sklearn.ensemble import IsolationForest
 
@@ -75,12 +76,12 @@ class ml:
     self.voname_map = {}
 
   def vo_record(self, row):
-    for record in metrics()[outlier]:
-      if record[1] not in outlier()[voname_map]:
+    for record in all_ces[outlier]:
+      if record[1] not in all_ces[voname_map]:
+        print(record[1])
         new_id = len(outlier(voname_map))
         voname_map[record[1]] = new_id
       record[1] = voname_map[record[1]]
-      print(record[1])
     return record[1]
 
 
@@ -97,6 +98,7 @@ class ml:
           voname_map[row['VO']] = new_id
         current_ce.at[index, 'VO'] = voname_map[row['VO']]
       
+
       num_days = len(current_ce)
       
       # Make sure there's enough days to test
@@ -105,40 +107,51 @@ class ml:
         
       # Make sure the last days are within a few days of now
       last_day = datetime.datetime.fromtimestamp(current_ce.tail(1)['Timestamp']/1000)
-      if last_day > (datetime.datetime.now() - datetime.timedelta(days=test_days*2)): # <--- Fix this line, I forget what it was before, all_ces needs to indexed into
+      if last_day > (datetime.datetime.now() - datetime.timedelta(days=test_days*2)): 
         continue
-      
-      # Only use the columns 1 and 2
-      #new_array = np.array(current_ce)
-      
-      #print(probes[interested_probe])   # What are these values supposed to represent?
-      #for z in probes[interested_probe]:
-      #  new_array.append([z[2], z[2]])
-      #date_array = np.array(probes[interested_probe])
-      date_array = np.array(current_ce)
-      
-      
+
       # Convert from milliseconds to seconds in the timestamp column
       # I'm sure you can do this with current_ce['Timestamp'] / 1000 or something.
       def convert_datetime(array):
-        #print(array[0])
-        return np.array([datetime.datetime.fromtimestamp(array[0]/1000), array[1], array[2]])
-              
-      date_array = np.apply_along_axis(convert_datetime, 1, date_array)
-      #print(new_array[:88])
+        return datetime.datetime.fromtimestamp(array[0]/1000), array[1], array[2]
+
+      date_array = current_ce.apply(convert_datetime, axis=1, result_type="broadcast")
+
+      for VO in date_array.VO.unique():
+        sortedDate = date_array.loc[date_array['VO'] == VO].sort_values(by=['Timestamp'], ascending=True)
+        minDate = sortedDate['Timestamp'].iloc[0]
+        currentDate = minDate - timedelta(days=7)
+        dateList = []
+
+        while currentDate > datetime.datetime.now() - datetime.timedelta(days=365):
+          dateList.append([currentDate, VO, 0])
+          currentDate -= datetime.timedelta(days=7)
+
+        df = pd.DataFrame(dateList, columns=['Timestamp', 'VO', 'CoreHours'])
+        date_array = date_array.append(df)
+
+      date_array = np.array(date_array)
       
       train_array = [] # training array
       test_array = []
+
+      # Sort by VO and Date
+      # For each unique VO, find min date, add rows that go back in time 
+      # curDate = mindate - timedelta(days=7)
+      # while curDate > datetime.datetime.now() - datetime.timedelta(days=365):
+      # df.addrow([curDate, <vo>, 0])
+      # curDate -= datetime.timedelta(days=7)
+
+      date_array = np.array(date_array)
+      sortDate = np.sort(date_array, axis=0)
+
       # Split the data into test and train
       for row in date_array:
         if row[0] < (datetime.datetime.now() - datetime.timedelta(days=test_days*7)):  
           train_array.append(row)
-          if row[0] is None:
-            train_array.append(0)
         else:
           test_array.append(row)
-          if row[0] is None:
-            test_array.append(0)  
+
       train_array = np.array(train_array)
       test_array = np.array(test_array)
 
@@ -149,15 +162,10 @@ class ml:
       if len(test_array) < test_days:
         continue
       
-      #np_array = np.array(new_array[:num_days-test_days])
-      #print(np_array)
-      #test_array = np.array(new_array[-test_days:])
-      #print(np_array)
       outliers_fraction = .01  # Percentage of observations we believe to be outliers
-      #print("Testing against array of size:", np_array.shape)
       iso_forest = IsolationForest(contamination=outliers_fraction, random_state=42)
       try:
-        y_pred = iso_forest.fit(train_array[:][:,[1,2]]).predict(test_array[:][:,[1,2]])
+        y_pred = iso_forest.fit(train_array[:,[1,2]]).predict(test_array[:,[1,2]])
       except:
         print("Failed array:", train_array)
         print("Test array:", test_array)
@@ -182,27 +190,18 @@ class ml:
       total_array = np.concatenate((train_array, test_array))
       
       for outlier_vo in outlier_vos:
-
         to_graph = []
         # Create the graphing array
         for row in total_array:
           if int(row[1]) != outlier_vo:
-
             continue
           to_graph.append(row)
             
 
         to_graph = np.array(to_graph)
         ax_now = plt.subplot(30, 3, plot_num)
-
-        #new_plt = ax_now.scatter(date_array[:, 0].astype("datetime64[ns]"), date_array[:, 2])# , s=10, color=colors[(to_graph[:, 3].astype(int) + 1) // 2])
         new_plt = ax_now.bar(to_graph[:, 0].astype("datetime64[ns]"), to_graph[:, 2], width=0.99, color=colors[(to_graph[:, 3].astype(int) + 1) // 2]) # width=3
-        #outliers = to_graph.loc[to_graph[3] == 1]
-        #print(outliers)
         plt.title("{} @ {}".format(inverted_voname_map[int(outlier_vo)], interested_probe), size=18)
-        #ax_now.text(.99, .01, "Outlier",
-        #               transform=plt.gca().transAxes, size=15,
-        #               horizontalalignment='right')
         months = mdates.MonthLocator()  # every month
         monthsFmt = mdates.DateFormatter('%b')
         ax_now.xaxis.set_major_locator(months)
@@ -211,9 +210,11 @@ class ml:
 
         plot_num += 1
         num_outliers += 1
+    
 
 
 print(num_outliers)
 ml = ml()
 ml.outlier(None)
-plt.savefig('outliers.png', bbox_inches='tight', dpi=100)
+plt.show()
+  
