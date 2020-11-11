@@ -3,8 +3,6 @@ import imghdr
 import config
 from email.message import EmailMessage
 import ml
-import datetime as dt
-import time
 
 
 msg = EmailMessage()

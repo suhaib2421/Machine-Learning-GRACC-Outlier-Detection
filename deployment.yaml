@@ -1,0 +1,14 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: outlier-detection-deployment
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: ml
+            image: suhaib24/ml-gracc-outlier-detection
+          restartPolicy: OnFailure
