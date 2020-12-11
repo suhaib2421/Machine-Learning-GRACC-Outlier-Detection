@@ -1,4 +1,4 @@
-# All the imports/libraries needed
+# All the imports/libraries needed 
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
@@ -10,15 +10,17 @@ import urllib3
 import math
 import datetime
 import sklearn
+from pandas.io.json import json_normalize
 import pandas as pd
+from datetime import timedelta
 
 # Get rid of insecure warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
 es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
         timeout=300, use_ssl=True, verify_certs=False)
+
 
 def metrics():
 
@@ -47,13 +49,14 @@ def metrics():
   bkt = bkt.metric('EarliestEndTime',    'min', field='EndTime')
   bkt = bkt.metric('LatestEndTime',      'max', field='EndTime')
   bkt = bkt.metric('CoreHours',          'sum', field='CoreHours', missing = 0)
-  response = s.execute() # Creates a bucket with different metrics such as wall duration, core hours, # of jobs, etc.
+  response = s.execute() # Creates a bucket with different metrics such as wall duration, core hours, # jobs, etc.
 
   probes = {}
   for bucket in response.aggregations['probe_terms']['buckets']:
     probes[bucket['key']] = pd.DataFrame(columns=['Timestamp', 'VO', 'CoreHours'])
     for voname in bucket['vonames']['buckets']:
       for endtime in voname['EndTime']['buckets']:
+        #print({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']})
         probes[bucket['key']] = probes[bucket['key']].append({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']}, ignore_index=True)
 
   return probes
@@ -61,22 +64,23 @@ def metrics():
 
 all_ces = metrics()
 
-
-from sklearn.ensemble import IsolationForest
+from sklearn.ensemble import IsolationForest  # Need to learn what Isolation Forest does
 
 test_days = 3
 plot_num = 1
 num_outliers = 0
 new_array = []
 plt.figure(figsize=(20, 140))
+# print(len(probes))
 
 class ml:
 
   def __init__(self):
     self.voname_map = {}
+    
 
   def vo_record(self, row):
-    for record in all_ces[outlier]:
+    for record in all_ces[outlier]:  
       if record[1] not in all_ces[voname_map]:
         print(record[1])
         new_id = len(outlier(voname_map))
@@ -92,13 +96,13 @@ class ml:
       current_ce = all_ces[interested_probe]
       # Enumerate the VONames
       voname_map = {}
-      for index, row in current_ce.iterrows(): 
+      for index, row in current_ce.iterrows():
         if row['VO'] not in voname_map:
           new_id = len(voname_map)
           voname_map[row['VO']] = new_id
         current_ce.at[index, 'VO'] = voname_map[row['VO']]
       
-
+      new_array = []
       num_days = len(current_ce)
       
       # Make sure there's enough days to test
@@ -188,6 +192,7 @@ class ml:
       train_array = np.append(train_array, np.ones([len(train_array),1], dtype=np.int8),1)
       test_array = np.append(test_array, y_pred[...,None], 1)
       total_array = np.concatenate((train_array, test_array))
+
       
       for outlier_vo in outlier_vos:
         to_graph = []
@@ -200,6 +205,7 @@ class ml:
 
         to_graph = np.array(to_graph)
         ax_now = plt.subplot(30, 3, plot_num)
+
         new_plt = ax_now.bar(to_graph[:, 0].astype("datetime64[ns]"), to_graph[:, 2], width=0.99, color=colors[(to_graph[:, 3].astype(int) + 1) // 2]) # width=3
         plt.title("{} @ {}".format(inverted_voname_map[int(outlier_vo)], interested_probe), size=18)
         months = mdates.MonthLocator()  # every month
@@ -210,11 +216,9 @@ class ml:
 
         plot_num += 1
         num_outliers += 1
-    
 
 
 print(num_outliers)
 ml = ml()
 ml.outlier(None)
-plt.show()
-  
+plt.savefig('outliers.png', bbox_inches='tight', dpi=100)

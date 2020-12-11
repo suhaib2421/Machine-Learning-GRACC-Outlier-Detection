@@ -3,6 +3,7 @@ kind: CronJob
 metadata:
   name: outlier-detection-deployment
 spec:
+  concurrencyPolicy: Forbid
   schedule: "*/1 * * * *"
   jobTemplate:
     spec:
