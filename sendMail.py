@@ -1,12 +1,13 @@
 import smtplib
 import imghdr
-from decouple import config
+import os
+import env
 from email.message import EmailMessage
 import ml
 
 
-userName = config('USER')
-password = config('KEY')
+userName = os.getenv("Username")
+password = os.getenv("Password")
 
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"
