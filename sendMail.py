@@ -1,14 +1,17 @@
 import smtplib
 import imghdr
-import config
+from decouple import config
 from email.message import EmailMessage
 import ml
 
 
+userName = config('USER')
+password = config('KEY')
+
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"
-msg['From'] = config.EMAIL_ADDRESS
-msg['To'] = config.EMAIL_ADDRESS
+msg['From'] = userName
+msg['To'] = userName # Read env variable w/ os.environ["USERNAME"]
 msg.set_content("Here are the outliers for today. See image attached: ")
 
 with open('outliers.png', 'rb') as f:
@@ -20,6 +23,6 @@ msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file
 
 
 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-    smtp.login(config.EMAIL_ADDRESS, config.PASSWORD)
+    smtp.login(userName, password)
 
     smtp.send_message(msg)
