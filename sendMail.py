@@ -6,8 +6,8 @@ from email.message import EmailMessage
 import ml
 
 
-userName = os.getenv("Username")
-password = os.getenv("Password")
+userName = os.getenv("username")
+password = os.getenv("password")
 
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"

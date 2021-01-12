@@ -12,4 +12,15 @@ spec:
           containers:
           - name: ml
             image: suhaib24/ml-gracc-outlier-detection
+            env:
+            - name: SECRET_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: gracc-outlier-secret
+                  key: username
+            - name: SECRET_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gracc-outlier-secret
+                  key: password
           restartPolicy: OnFailure
