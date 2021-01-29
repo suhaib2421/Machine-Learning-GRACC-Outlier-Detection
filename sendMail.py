@@ -1,7 +1,6 @@
 import smtplib
 import imghdr
 import os
-import env
 from email.message import EmailMessage
 import ml
 
