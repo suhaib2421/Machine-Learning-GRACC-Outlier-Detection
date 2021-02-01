@@ -1,9 +1,9 @@
-FROM gsantomaggio/sklearn
+FROM python:3-buster
 
 ADD . /HCC
 WORKDIR /HCC
 
-RUN pip install -U -q elasticsearch elasticsearch_dsl numpy scipy sklearn
+RUN pip install -U -q elasticsearch elasticsearch_dsl numpy scikit-learn
 RUN python -m pip install matplotlib
 RUN python -m pip install pandas
 RUN python -m pip install config
