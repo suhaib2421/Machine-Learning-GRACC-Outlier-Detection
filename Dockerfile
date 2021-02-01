@@ -8,4 +8,4 @@ RUN python -m pip install matplotlib
 RUN python -m pip install pandas
 RUN python -m pip install config
 
-ENTRYPOINT ["python", "sendMail.py"]
+ENTRYPOINT ["python", "/HCC/sendMail.py"]
