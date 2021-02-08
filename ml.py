@@ -21,6 +21,7 @@ es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
         timeout=300, use_ssl=True, verify_certs=False)
 
+print("finished elastic")
 
 def metrics():
 
@@ -58,6 +59,8 @@ def metrics():
       for endtime in voname['EndTime']['buckets']:
         #print({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']})
         probes[bucket['key']] = probes[bucket['key']].append({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']}, ignore_index=True)
+
+  print("metrics")
 
   return probes
 
@@ -217,7 +220,7 @@ class ml:
         plot_num += 1
         num_outliers += 1
 
-
+print("done")
 print(num_outliers)
 ml = ml()
 ml.outlier(None)
