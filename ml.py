@@ -220,8 +220,10 @@ class ml:
         plot_num += 1
         num_outliers += 1
 
-print("done")
-print(num_outliers)
-ml = ml()
-ml.outlier(None)
-plt.savefig('outliers.png', bbox_inches='tight', dpi=100)
+  def outlierPicture(self, fileName):
+    plt.savefig(fileName, bbox_inches='tight', dpi=100)
+
+# ml = ml()
+# ml.outlier(None)
+
+  
