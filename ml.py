@@ -57,7 +57,6 @@ def metrics():
     probes[bucket['key']] = pd.DataFrame(columns=['Timestamp', 'VO', 'CoreHours'])
     for voname in bucket['vonames']['buckets']:
       for endtime in voname['EndTime']['buckets']:
-        #print({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']})
         probes[bucket['key']] = probes[bucket['key']].append({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']}, ignore_index=True)
 
   print("metrics")
@@ -74,7 +73,6 @@ plot_num = 1
 num_outliers = 0
 new_array = []
 plt.figure(figsize=(20, 140))
-# print(len(probes))
 
 class ml:
 
@@ -223,7 +221,5 @@ class ml:
   def outlierPicture(self, fileName):
     plt.savefig(fileName, bbox_inches='tight', dpi=100)
 
-# ml = ml()
-# ml.outlier(None)
 
   
