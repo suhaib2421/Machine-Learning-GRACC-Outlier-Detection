@@ -11,6 +11,8 @@ graccOutlier.outlierPicture("outliers.png")
 userName = os.getenv("username")
 password = os.getenv("password")
 
+print("in sendMail.py")
+
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"
 msg['From'] = userName
@@ -23,6 +25,8 @@ with open('outliers.png', 'rb') as f:
     file_name = f.name
 
 msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file_name)
+
+print("Trying to connect to email")
 
 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.login(userName, password)

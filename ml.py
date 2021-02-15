@@ -74,6 +74,8 @@ num_outliers = 0
 new_array = []
 plt.figure(figsize=(20, 140))
 
+print("above class ml")
+
 class ml:
 
   def __init__(self):
@@ -91,6 +93,7 @@ class ml:
 
 
   def outlier(self, voname_map):
+    print("in outliers")
     num_outliers = 0
     plot_num = 1
     for interested_probe in all_ces:
@@ -139,6 +142,8 @@ class ml:
       
       train_array = [] # training array
       test_array = []
+      
+      print("dateTime")
 
       # Sort by VO and Date
       # For each unique VO, find min date, add rows that go back in time 
@@ -220,6 +225,10 @@ class ml:
 
   def outlierPicture(self, fileName):
     plt.savefig(fileName, bbox_inches='tight', dpi=100)
+    print("outlierPicture")
+
+
+print("done")
 
 
   
