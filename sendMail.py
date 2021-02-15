@@ -4,10 +4,13 @@ import os
 from email.message import EmailMessage
 import ml
 
+print("sendMail")
+
 graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
 
+print("did some ml")
 userName = os.getenv("username")
 password = os.getenv("password")
 
@@ -32,3 +35,5 @@ with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.login(userName, password)
 
     smtp.send_message(msg)
+
+print("sent message, probably")

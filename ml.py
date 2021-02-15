@@ -15,7 +15,10 @@ import pandas as pd
 from datetime import timedelta
 
 # Get rid of insecure warning
+print("before elastic")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+print("hello")
 
 es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
@@ -27,7 +30,8 @@ def metrics():
 
   osg_summary_index = 'gracc.osg.summary'
   s = Search(using=es, index=osg_summary_index)
-  
+  print("we got to metrics")  
+
   end_time = datetime.datetime.now()   # The end time is today
   start_time = end_time - datetime.timedelta(days=365)   # Start day is a year ago from today
   
@@ -43,7 +47,8 @@ def metrics():
   curBucket = s.aggs.bucket("probe_terms", a)
   curBucket = curBucket.bucket("vonames", b)
   curBucket = curBucket.bucket("EndTime", 'date_histogram', field="EndTime", interval="7d")
-
+  print("making some buckets")
+  
   bkt = curBucket
   bkt = bkt.metric('WallDuration',       'sum', field='WallDuration', missing = 0)
   bkt = bkt.metric('NumberOfJobs',       'sum', field='Count', missing = 0)
@@ -64,6 +69,7 @@ def metrics():
   return probes
 
 
+print("finished a method")
 all_ces = metrics()
 
 from sklearn.ensemble import IsolationForest  # Need to learn what Isolation Forest does
