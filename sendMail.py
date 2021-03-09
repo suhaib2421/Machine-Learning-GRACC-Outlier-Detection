@@ -4,12 +4,17 @@ import os
 from email.message import EmailMessage
 import ml
 
+print("sendMail")
+
 graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
 
+print("did some ml")
 userName = os.getenv("username")
 password = os.getenv("password")
+
+print("in sendMail.py")
 
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"
@@ -24,7 +29,11 @@ with open('outliers.png', 'rb') as f:
 
 msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file_name)
 
+print("Trying to connect to email")
+
 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.login(userName, password)
 
     smtp.send_message(msg)
+
+print("sent message, probably")

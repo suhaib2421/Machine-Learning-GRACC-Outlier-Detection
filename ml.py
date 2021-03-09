@@ -15,7 +15,10 @@ import pandas as pd
 from datetime import timedelta
 
 # Get rid of insecure warning
+print("before elastic")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+print("hello")
 
 es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
@@ -27,7 +30,8 @@ def metrics():
 
   osg_summary_index = 'gracc.osg.summary'
   s = Search(using=es, index=osg_summary_index)
-  
+  print("we got to metrics")  
+
   end_time = datetime.datetime.now()   # The end time is today
   start_time = end_time - datetime.timedelta(days=365)   # Start day is a year ago from today
   
@@ -43,7 +47,8 @@ def metrics():
   curBucket = s.aggs.bucket("probe_terms", a)
   curBucket = curBucket.bucket("vonames", b)
   curBucket = curBucket.bucket("EndTime", 'date_histogram', field="EndTime", interval="7d")
-
+  print("making some buckets")
+  
   bkt = curBucket
   bkt = bkt.metric('WallDuration',       'sum', field='WallDuration', missing = 0)
   bkt = bkt.metric('NumberOfJobs',       'sum', field='Count', missing = 0)
@@ -64,6 +69,7 @@ def metrics():
   return probes
 
 
+print("finished a method")
 all_ces = metrics()
 
 from sklearn.ensemble import IsolationForest  # Need to learn what Isolation Forest does
@@ -73,6 +79,8 @@ plot_num = 1
 num_outliers = 0
 new_array = []
 plt.figure(figsize=(20, 140))
+
+print("above class ml")
 
 class ml:
 
@@ -91,6 +99,7 @@ class ml:
 
 
   def outlier(self, voname_map):
+    print("in outliers")
     num_outliers = 0
     plot_num = 1
     for interested_probe in all_ces:
@@ -139,6 +148,8 @@ class ml:
       
       train_array = [] # training array
       test_array = []
+      
+      print("dateTime")
 
       # Sort by VO and Date
       # For each unique VO, find min date, add rows that go back in time 
@@ -220,6 +231,10 @@ class ml:
 
   def outlierPicture(self, fileName):
     plt.savefig(fileName, bbox_inches='tight', dpi=100)
+    print("outlierPicture")
+
+
+print("done")
 
 
   
