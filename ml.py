@@ -72,7 +72,7 @@ def metrics():
 print("finished a method")
 all_ces = metrics()
 
-from sklearn.ensemble import IsolationForest  # Need to learn what Isolation Forest does
+from sklearn.ensemble import IsolationForest 
 
 test_days = 3
 plot_num = 1
@@ -86,33 +86,34 @@ class ml:
 
   def __init__(self):
     self.voname_map = {}
+    self.siteVo = []
     
 
-  def vo_record(self, row):
-    for record in all_ces[outlier]:  
-      if record[1] not in all_ces[voname_map]:
-        print(record[1])
-        new_id = len(outlier(voname_map))
-        voname_map[record[1]] = new_id
-      record[1] = voname_map[record[1]]
-    return record[1]
+  def vo_record(self, current_ce):
+    """
+    This creates a VO map from human readable VO names to numeric ID values
+    :param DataFrame current_ce: Dataframe of a CE’s usage with all VOs
+    """
+    for index, vo in current_ce.iterrows():
+        if vo['VO'] not in self.voname_map:
+          new_id = len(self.voname_map)
+          self.voname_map[vo['VO']] = new_id
+        current_ce.at[index, 'VO'] = self.voname_map[vo['VO']]
 
 
   def outlier(self, voname_map):
+    """
+    This will determine outliers from the VOs and CEs through the use of isolation forest
+    :param Map voname_map: mapping of ce and vo
+    """
     print("in outliers")
     num_outliers = 0
     plot_num = 1
     for interested_probe in all_ces:
       current_ce = all_ces[interested_probe]
       # Enumerate the VONames
-      voname_map = {}
-      for index, row in current_ce.iterrows():
-        if row['VO'] not in voname_map:
-          new_id = len(voname_map)
-          voname_map[row['VO']] = new_id
-        current_ce.at[index, 'VO'] = voname_map[row['VO']]
+      self.vo_record(current_ce)
       
-      new_array = []
       num_days = len(current_ce)
       
       # Make sure there's enough days to test
