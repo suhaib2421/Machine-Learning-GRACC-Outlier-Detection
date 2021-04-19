@@ -236,11 +236,3 @@ class ml:
 
   def printingTuples(self):
     return self.resultString
-    
-
-
-print(num_outliers)
-ml = ml()
-ml.outlier(None)
-plt.show()
-  
