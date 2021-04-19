@@ -73,29 +73,33 @@ class ml:
 
   def __init__(self):
     self.voname_map = {}
+    self.correctTuple = ()
+    self.resultString = []
 
-  def vo_record(self, row):
-    for record in metrics()[outlier]:
-      if record[1] not in outlier()[voname_map]:
-        new_id = len(outlier(voname_map))
-        voname_map[record[1]] = new_id
-      record[1] = voname_map[record[1]]
-      print(record[1])
-    return record[1]
+  def vo_record(self, current_ce):
+    """
+    This creates a VO map from human readable VO names to numeric ID values
+    :param DataFrame current_ce: Dataframe of a CE’s usage with all VOs
+    """
+    for index, val in current_ce.iterrows():
+      if val['VO'] not in self.voname_map:
+        new_id = len(self.voname_map)
+        self.voname_map[val['VO']] = new_id
+      current_ce.at[index, 'VO'] = self.voname_map[val['VO']]
 
 
   def outlier(self, voname_map):
+    """
+    This will determine outliers from the VOs and CEs through the use of isolation forest
+    :param Map voname_map: mapping of ce and vo
+    """
+
     num_outliers = 0
     plot_num = 1
     for interested_probe in all_ces:
       current_ce = all_ces[interested_probe]
       # Enumerate the VONames
-      voname_map = {}
-      for index, row in current_ce.iterrows(): 
-        if row['VO'] not in voname_map:
-          new_id = len(voname_map)
-          voname_map[row['VO']] = new_id
-        current_ce.at[index, 'VO'] = voname_map[row['VO']]
+      self.vo_record(current_ce)
       
       num_days = len(current_ce)
       
@@ -158,7 +162,7 @@ class ml:
       outlier = False
 
       # Converting from the numbers back to the VO names
-      inverted_voname_map = dict([[v,k] for k,v in voname_map.items()])
+      inverted_voname_map = dict([[v,k] for k,v in self.voname_map.items()])
       outlier_vos = []
       for idx, pred in enumerate(y_pred):
         if pred == -1:
