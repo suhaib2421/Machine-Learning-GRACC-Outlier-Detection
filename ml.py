@@ -125,11 +125,9 @@ class ml:
       # Convert from milliseconds to seconds in the timestamp column
       # I'm sure you can do this with current_ce['Timestamp'] / 1000 or something.
       def convert_datetime(array):
-        #print(array[0])
         return np.array([datetime.datetime.fromtimestamp(array[0]/1000), array[1], array[2]])
               
       date_array = np.apply_along_axis(convert_datetime, 1, date_array)
-      #print(new_array[:88])
       
       np_array = [] # training array
       test_array = []
@@ -192,11 +190,6 @@ class ml:
       for index, val in enumerate(self.correctTuple[1]):
       if self.correctTuple[1]:
         self.resultString.append(val + " @ " + self.correctTuple[0])
-
-      # Takes all values in tuple and appends to array in the form of VO
-      for index, val in enumerate(self.correctTuple[1]):
-        if self.correctTuple[1]:
-          self.resultString.append(val + " @ " + self.correctTuple[0])
       
       outlier_vos = set(outlier_vos)
       # Add the "outlier" column to the arrays
