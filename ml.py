@@ -188,8 +188,8 @@ class ml:
 
       # This will create a string of the correct site and vo
       for index, val in enumerate(self.correctTuple[1]):
-      if self.correctTuple[1]:
-        self.resultString.append(val + " @ " + self.correctTuple[0])
+        if self.correctTuple[1]:
+          self.resultString.append(val + " @ " + self.correctTuple[0])
       
       outlier_vos = set(outlier_vos)
       # Add the "outlier" column to the arrays
