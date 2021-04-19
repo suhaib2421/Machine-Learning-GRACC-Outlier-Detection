@@ -112,13 +112,6 @@ class ml:
       if last_day > (datetime.datetime.now() - datetime.timedelta(days=test_days*2)): # <--- Fix this line, I forget what it was before, all_ces needs to indexed into
         continue
       
-      # Only use the columns 1 and 2
-      #new_array = np.array(current_ce)
-      
-      #print(probes[interested_probe])   # What are these values supposed to represent?
-      #for z in probes[interested_probe]:
-      #  new_array.append([z[2], z[2]])
-      #date_array = np.array(probes[interested_probe])
       date_array = np.array(current_ce)
       
       
@@ -213,14 +206,8 @@ class ml:
         ax_now = plt.subplot(30, 3, plot_num)
         #print(to_graph[:, 2])
 
-        #new_plt = ax_now.scatter(date_array[:, 0].astype("datetime64[ns]"), date_array[:, 2])# , s=10, color=colors[(to_graph[:, 3].astype(int) + 1) // 2])
         new_plt = ax_now.bar(to_graph[:, 0].astype("datetime64[ns]"), to_graph[:, 2], width=0.99, color=colors[(to_graph[:, 3].astype(int) + 1) // 2]) # width=3
-        #outliers = to_graph.loc[to_graph[3] == 1]
-        #print(outliers)
         plt.title("{} @ {}".format(inverted_voname_map[int(outlier_vo)], interested_probe), size=18)
-        #ax_now.text(.99, .01, "Outlier",
-        #               transform=plt.gca().transAxes, size=15,
-        #               horizontalalignment='right')
         months = mdates.MonthLocator()  # every month
         monthsFmt = mdates.DateFormatter('%b')
         ax_now.xaxis.set_major_locator(months)
@@ -229,10 +216,9 @@ class ml:
 
         plot_num += 1
         num_outliers += 1
-        
-        #return voname_map
 
-      #print(num_outliers)
+  def outlierPicture(self, fileName):
+    plt.savefig(fileName, bbox_inches='tight', dpi=100)
 
   def printingTuples(self):
     return self.resultString
