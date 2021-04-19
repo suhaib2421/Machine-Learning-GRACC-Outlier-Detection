@@ -9,7 +9,7 @@ graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
 
-graccOutlier.printingTuples(None)
+# graccOutlier.printingTuples(None)
 
 userName = os.getenv("username")
 password = os.getenv("password")
