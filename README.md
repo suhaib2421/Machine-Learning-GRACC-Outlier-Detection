@@ -16,24 +16,24 @@ Potentially look into adding more ways to determine outliers such as CPU time or
 
 There is a bug where somewhere in the outliers function the dataframe might be getting overwritten and the keys in voname_map are turning into numbers from strings. This was only found by using the colab notebook on Google drive. If you run the cell above the ml class, then it fixes the key value pairs, which is why we think there may be something happening to the dataframe later.
 
-
-## Metrics Function:
+## ml.py File
+### Metrics Function:
 
 This function returns a pandas dataframe with the columns of Timestamp, VO, and CoreHours. These are the datapoints that will be used in the ml class and what we are using in order to determine outliers currently.
 
-## Vo_record Function:
+### Vo_record Function:
 
 This function creates a VO map from human readable (strings) VO names to numeric ID values. It is used in the next function, outlier. 
 
-## Outlier Function:
+### Outlier Function:
 
 This function will determine outliers from the Vos and CEs through the use of isolation forest. This function is where outliers are calculated, and graphs are produced. To determine outliers, we take our data and split them into a training and testing set and allow isolation forest to go through the data we have provided. It will then determine which ones are outliers based on the fraction we have provided it, in our case .01 or 1%. After determining outliers, we do a reverse mapping on the voname_map in order to get the sites and VOs that are partially failing and we will use that in our email file.
 
-## outlierPicture Function:
+### outlierPicture Function:
  
  This function takes the matplotlib graph and saves it as a png to then send as an attachment in the email.
 
-## printingTuples Function:
+### printingTuples Function:
 
 This function will take the reverse mapping we have done in the outlier function and return it in order to be used in sendMail.py
 
