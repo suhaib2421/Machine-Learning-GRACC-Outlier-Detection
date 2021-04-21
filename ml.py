@@ -218,7 +218,7 @@ class ml:
         num_outliers += 1
 
   def outlierPicture(self, fileName):
-    plt.savefig(fileName, bbox_inches='tight', dpi=100)
+    plt.savefig(fileName)
 
   def printingTuples(self):
     return self.resultString
