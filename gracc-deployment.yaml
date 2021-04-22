@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: outlier
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: outlier
+            image: suhaib24/ml-gracc-outlier-detection
+            envFrom:
+            - secretRef:
+                name: gracc-secret
+            args:
+            - python
+            - sendMail.py
+          restartPolicy: OnFailure
