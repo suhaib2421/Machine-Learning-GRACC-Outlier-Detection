@@ -37,3 +37,7 @@ This function will determine outliers from the Vos and CEs through the use of is
 
 This function will take the reverse mapping we have done in the outlier function and return it in order to be used in sendMail.py
 
+## sendMail.py File
+
+### Information:
+Make sure that you turn "Less secure apps" on in gmail settings or else you won't be able to send an email with this code
