@@ -4,7 +4,6 @@ import os
 from email.message import EmailMessage
 import ml
 
-
 graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
