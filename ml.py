@@ -67,7 +67,7 @@ test_days = 3
 plot_num = 1
 num_outliers = 0
 new_array = []
-# plt.figure(figsize=(8, 5))
+plt.figure(figsize=(100, 125))
 
 class ml:
 
@@ -218,7 +218,7 @@ class ml:
         num_outliers += 1
 
   def outlierPicture(self, fileName):
-    plt.savefig(fileName)
+    plt.savefig(fileName, bbox_inches='tight', dpi=100)
 
   def printingTuples(self):
     return self.resultString
