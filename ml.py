@@ -67,7 +67,7 @@ test_days = 3
 plot_num = 1
 num_outliers = 0
 new_array = []
-# plt.figure(figsize=(100, 125))
+plt.figure(figsize=(100, 125))
 
 class ml:
 
