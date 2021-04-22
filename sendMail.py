@@ -10,8 +10,8 @@ graccOutlier.outlierPicture("outliers.png")
 
 # graccOutlier.printingTuples(None)
 
-userName = os.getenv("username")
-password = os.getenv("password")
+userName = os.getenv('username')
+password = os.getenv('password')
 
 msg = EmailMessage()
 msg['Subject'] = "Daily Outliers"
