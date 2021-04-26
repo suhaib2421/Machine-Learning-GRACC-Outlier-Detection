@@ -1,34 +1,59 @@
 import smtplib
 import imghdr
 import os
-from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 import ml
+from tabulate import tabulate
 
 graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
 
+data = graccOutlier.printingTuples();
+HTMLtable = tabulate(data, headers=["VO", "Site"], tablefmt="html");
+table = tabulate(data, headers=["VO", "Site"])
+print(table);
+
 # graccOutlier.printingTuples(None)
 
-userName = os.getenv('username')
-password = os.getenv('password')
+userName = os.getenv('SECRET_USERNAME')
+password = os.getenv('SECRET_PASSWORD')
 
-msg = EmailMessage()
+msg = MIMEMultipart('alternative')
 msg['Subject'] = "Daily Outliers"
 msg['From'] = userName
 msg['To'] = userName # Read env variable w/ os.environ["USERNAME"]
-msg.set_content("Here are the outliers for today. See image attached: ")
+text = "Here are the outliers for today.\n\n" + table + "\n\n" + "See image attached as well\n"
 
-with open('outliers.png', 'rb') as f:
-    file_data = f.read()
-    file_type = imghdr.what(f.name)
-    file_name = f.name
+html = """\
+    <html>
+    <head></head>
+        <body>
+            <p>Here are the outliers for today.</p>
+            <p>
+            {HTMLtable}
+            </p>
+        </body>
+    </html>
+    """.format(HTMLtable = HTMLtable)
 
-msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file_name)
+
+part1 = MIMEText(text, 'plain')
+part2 = MIMEText(html, 'html')
+
+msg.attach(part1)
+msg.attach(part2)
+
+fp = open('outliers.png', 'rb')                                                    
+img = MIMEImage(fp.read())
+fp.close()
+img.add_header('Outliers', '<{}>'.format('outliers.png'))
+msg.attach(img)
 
 
 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
     smtp.login(userName, password)
 
-    smtp.send_message(msg)
-
+    smtp.sendmail(userName, userName, msg.as_string())
