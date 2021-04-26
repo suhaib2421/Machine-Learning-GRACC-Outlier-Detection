@@ -11,12 +11,9 @@ graccOutlier = ml.ml()
 graccOutlier.outlier(None)
 graccOutlier.outlierPicture("outliers.png")
 
-data = graccOutlier.printingTuples();
-HTMLtable = tabulate(data, headers=["VO", "Site"], tablefmt="html");
+data = graccOutlier.printingTuples()
+HTMLtable = tabulate(data, headers=["VO", "Site"], tablefmt="html")
 table = tabulate(data, headers=["VO", "Site"])
-print(table);
-
-# graccOutlier.printingTuples(None)
 
 userName = os.getenv('SECRET_USERNAME')
 password = os.getenv('SECRET_PASSWORD')
