@@ -41,3 +41,7 @@ This function will take the reverse mapping we have done in the outlier function
 
 ### Information:
 Make sure that you turn "Less secure apps" on in gmail settings or else you won't be able to send an email with this code
+To test locally with Docker use command: ```docker run --env-file ./.env "name of build" ```
+
+Information on username and password of email is gotten through environment variables that come from the mySecret.yaml file.
+Table in email is sent using premailer
