@@ -1,6 +1,6 @@
 # Machine-Learning-GRACC-Outlier-Detection
 	
-## General:
+## General Information:
 
 This program will take a look at datapoints from the open science grid such as “wall duration”, “end time”, and “core hours” to determine whether there are any partially failed sites or in other words if there are any outliers detected on any HCC sites. The way this is calculated is through looking at the past year of usage on each VO and comparing it to the last 3 weeks. Only the last 3 weeks is useful because we can’t fix any problems that occurred before that so the data is not very useful. To calculate the outliers, isolation forest is used because it is a quick way to determine them and has the ability to be scalable. We are looking at changes in core hours per VO per site but could add more areas to look at.
 
@@ -41,3 +41,7 @@ This function will take the reverse mapping we have done in the outlier function
 
 ### Information:
 Make sure that you turn "Less secure apps" on in gmail settings or else you won't be able to send an email with this code
+To test locally with Docker use command: ```docker run --env-file ./.env "name of build" ```
+
+Information on username and password of email is gotten through environment variables that come from the mySecret.yaml file.
+Table in email is sent using premailer
