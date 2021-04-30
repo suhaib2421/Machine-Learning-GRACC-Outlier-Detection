@@ -11,6 +11,7 @@ import math
 import datetime
 import sklearn
 import pandas as pd
+from datetime import timedelta
 
 # Get rid of insecure warning
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -120,10 +121,29 @@ class ml:
       def convert_datetime(array):
         return np.array([datetime.datetime.fromtimestamp(array[0]/1000), array[1], array[2]])
               
-      date_array = np.apply_along_axis(convert_datetime, 1, date_array)
+      # date_array = np.apply_along_axis(convert_datetime, 1, date_array)
+
+      date_array = current_ce.apply(convert_datetime, axis=1, result_type="broadcast")
+
+      # Code below ensures that any empty cells are filled with 0s
+      for VO in date_array.VO.unique():
+        sortedDate = date_array.loc[date_array['VO'] == VO].sort_values(by=['Timestamp'], ascending=True)
+        minDate = sortedDate['Timestamp'].iloc[0]
+        currentDate = minDate - timedelta(days=7)
+        dateList = []
+
+        while currentDate > datetime.datetime.now() - datetime.timedelta(days=365):
+          dateList.append([currentDate, VO, 0])
+          currentDate -= datetime.timedelta(days=7)
+
+        df = pd.DataFrame(dateList, columns=['Timestamp', 'VO', 'CoreHours'])
+        date_array = date_array.append(df)
+
+      date_array = np.array(date_array)
       
       np_array = [] # training array
       test_array = []
+
       # Split the data into test and train
       for row in date_array:
         if row[0] < (datetime.datetime.now() - datetime.timedelta(days=test_days*7)):  

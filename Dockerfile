@@ -5,6 +5,7 @@ RUN python -m pip install matplotlib
 RUN python -m pip install pandas
 RUN python -m pip install config
 RUN python -m pip install tabulate
+RUN python -m pip install premailer
 
 ADD . /HCC
 WORKDIR /HCC
