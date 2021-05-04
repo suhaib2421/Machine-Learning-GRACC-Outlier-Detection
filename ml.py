@@ -21,6 +21,8 @@ es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
         timeout=300, use_ssl=True, verify_certs=False)
 
+print("connected") 
+
 def metrics():
 
   osg_summary_index = 'gracc.osg.summary'
@@ -60,6 +62,8 @@ def metrics():
 
   return probes
 
+print("metrics done")
+
 all_ces = metrics()
 
 from sklearn.ensemble import IsolationForest
@@ -69,6 +73,8 @@ plot_num = 1
 num_outliers = 0
 new_array = []
 plt.figure(figsize=(20, 140))
+
+print("ml")
 
 class ml:
 
@@ -245,3 +251,5 @@ class ml:
     for item in self.resultString:
       arr.append(item.split(" @ "))
     return arr
+
+print("done")

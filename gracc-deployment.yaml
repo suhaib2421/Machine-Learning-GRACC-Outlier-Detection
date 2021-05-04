@@ -11,11 +11,8 @@ spec:
         spec:
           containers:
           - name: outlier
-            image: suhaib24/ml-gracc-outlier-detection
+            image: suhaib24/ml-gracc-outlier-detection:latest
             envFrom:
             - secretRef:
                 name: gracc-secret
-            args:
-            - python
-            - sendMail.py
           restartPolicy: OnFailure
