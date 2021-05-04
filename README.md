@@ -10,11 +10,11 @@ The second part of this application is to send an email to an administrator that
 
 Kubernetes Cronjob was running into errors connecting to gracc.opensciencegrid and needs to be looked into. This problem was encountered when using centOS that Derek had set up. Besides this, the file to run the cronjob should be correct, however the secret file will need to be updated with new user email credentials. To run the sendMail.py file, new developer will need to enter their email address and password as well
 
-For development, some tweaking of the isolation forest algorithm may be required because there were times that an outlier was displayed in a graph when it looked like normal behavior. Lastly, the sendMail.py file needs to create a table of the outliers from the strings that are returned in the printingTuples function in ml.py. 
+For development, some tweaking of the isolation forest algorithm may be required because there were times that an outlier was displayed in a graph when it looked like normal behavior.
 
 Potentially look into adding more ways to determine outliers such as CPU time or even look at changes in user behavior such as did someone suddenly stop submitting jobs, did they submit more jobs, or did they become longer on average. 
 
-There is a bug where somewhere in the outliers function the dataframe might be getting overwritten and the keys in voname_map are turning into numbers from strings. This was only found by using the colab notebook on Google drive. If you run the cell above the ml class, then it fixes the key value pairs, which is why we think there may be something happening to the dataframe later.
+There is a bug where somewhere in the outliers function the dataframe might be getting overwritten and the keys in voname_map are turning into numbers from strings. This was only found by using the colab notebook on Google drive. If you run the cell above the ml class, then it fixes the key value pairs, which is why we think there may be something happening to the dataframe later. However, since the program will run in its entirety everytime you won't notice this happening in production; it should still be investigated if possible though.
 
 ## ml.py File
 ### Metrics Function:
