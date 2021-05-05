@@ -12,6 +12,7 @@ spec:
           containers:
           - name: outlier
             image: suhaib24/ml-gracc-outlier-detection:latest
+            imagePullPolicy: Always
             envFrom:
             - secretRef:
                 name: gracc-secret
