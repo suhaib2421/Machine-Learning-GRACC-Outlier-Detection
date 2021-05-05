@@ -16,4 +16,8 @@ spec:
             envFrom:
             - secretRef:
                 name: gracc-secret
+            env:
+            - name: pythonBuffer
+              value: PYTHONUNBUFFERED=1
           restartPolicy: OnFailure
+      
