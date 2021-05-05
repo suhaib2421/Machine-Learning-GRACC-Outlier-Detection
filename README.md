@@ -16,6 +16,8 @@ Potentially look into adding more ways to determine outliers such as CPU time or
 
 There is a bug where somewhere in the outliers function the dataframe might be getting overwritten and the keys in voname_map are turning into numbers from strings. This was only found by using the colab notebook on Google drive. If you run the cell above the ml class, then it fixes the key value pairs, which is why we think there may be something happening to the dataframe later. However, since the program will run in its entirety everytime you won't notice this happening in production; it should still be investigated if possible though.
 
+A blacklist of sites was discussed during this project to blacklist sites that we know in advance will produce outlier data. Derek would have more information on what sites these would be, but adding this feature will cut the amount of information any system administrator has to look through. Adding weight or importance to different sites would be another addition that was requested in feedback. 
+
 ## ml.py File
 ### Metrics Function:
 
