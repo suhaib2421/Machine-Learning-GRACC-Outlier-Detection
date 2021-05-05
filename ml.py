@@ -67,7 +67,7 @@ print("metrics done")
 all_ces = metrics()
 
 from sklearn.ensemble import IsolationForest
-
+print("isolation forest")
 test_days = 3
 plot_num = 1
 num_outliers = 0
@@ -93,7 +93,7 @@ class ml:
         new_id = len(self.voname_map)
         self.voname_map[val['VO']] = new_id
       current_ce.at[index, 'VO'] = self.voname_map[val['VO']]
-
+    print("vo_record function")
 
   def outlier(self, voname_map):
     """
@@ -103,6 +103,7 @@ class ml:
 
     num_outliers = 0
     plot_num = 1
+    print("outlier function")
     for interested_probe in all_ces:
       current_ce = all_ces[interested_probe]
       # Enumerate the VONames
@@ -130,7 +131,7 @@ class ml:
       # date_array = np.apply_along_axis(convert_datetime, 1, date_array)
 
       date_array = current_ce.apply(convert_datetime, axis=1, result_type="broadcast")
-
+      print("date_array things")
       # Code below ensures that any empty cells are filled with 0s
       for VO in date_array.VO.unique():
         sortedDate = date_array.loc[date_array['VO'] == VO].sort_values(by=['Timestamp'], ascending=True)
@@ -149,7 +150,7 @@ class ml:
       
       np_array = [] # training array
       test_array = []
-
+      print("splitting data")
       # Split the data into test and train
       for row in date_array:
         if row[0] < (datetime.datetime.now() - datetime.timedelta(days=test_days*7)):  
@@ -209,7 +210,7 @@ class ml:
       for index, val in enumerate(self.correctTuple[1]):
         if self.correctTuple[1]:
           self.resultString.append(val + " @ " + self.correctTuple[0])
-      
+      print("did reverse mapping")
       outlier_vos = set(outlier_vos)
       # Add the "outlier" column to the arrays
       np_array = np.append(np_array, np.ones([len(np_array),1], dtype=np.int8),1)
