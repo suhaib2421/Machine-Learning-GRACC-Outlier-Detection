@@ -27,7 +27,7 @@ def metrics():
 
   osg_summary_index = 'gracc.osg.summary'
   s = Search(using=es, index=osg_summary_index)
-  
+  print("beginning") 
   end_time = datetime.datetime.now()   # The end time is today
   start_time = end_time - datetime.timedelta(days=365)   # Start day is a year ago from today
   
@@ -43,7 +43,7 @@ def metrics():
   curBucket = s.aggs.bucket("probe_terms", a)
   curBucket = curBucket.bucket("vonames", b)
   curBucket = curBucket.bucket("EndTime", 'date_histogram', field="EndTime", interval="7d")
-
+  print("lots of buckets")
   bkt = curBucket
   bkt = bkt.metric('WallDuration',       'sum', field='WallDuration', missing = 0)
   bkt = bkt.metric('NumberOfJobs',       'sum', field='Count', missing = 0)
@@ -59,13 +59,14 @@ def metrics():
       for endtime in voname['EndTime']['buckets']:
         #print({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']})
         probes[bucket['key']] = probes[bucket['key']].append({'Timestamp': endtime['key'], 'VO': voname['key'], 'CoreHours': endtime['CoreHours']['value']}, ignore_index=True)
-
+  print("added values to probes")
   return probes
 
 print("metrics done")
 
 all_ces = metrics()
 
+print("all_ces")
 from sklearn.ensemble import IsolationForest
 print("isolation forest")
 test_days = 3
