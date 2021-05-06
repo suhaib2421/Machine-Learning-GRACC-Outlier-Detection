@@ -19,7 +19,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 es = elasticsearch.Elasticsearch(
         ['https://gracc.opensciencegrid.org/q'],
-        timeout=300, use_ssl=True, verify_certs=False)
+        timeout=3600, use_ssl=True, verify_certs=False)
 
 print("connected") 
 
