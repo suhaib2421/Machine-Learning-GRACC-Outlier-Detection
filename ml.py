@@ -50,8 +50,9 @@ def metrics():
   bkt = bkt.metric('EarliestEndTime',    'min', field='EndTime')
   bkt = bkt.metric('LatestEndTime',      'max', field='EndTime')
   bkt = bkt.metric('CoreHours',          'sum', field='CoreHours', missing = 0)
+  print("above s.execute")
   response = s.execute() # Creates a bucket with different metrics such as wall duration, core hours, # of jobs, etc.
-
+  print("bkt made")
   probes = {}
   for bucket in response.aggregations['probe_terms']['buckets']:
     probes[bucket['key']] = pd.DataFrame(columns=['Timestamp', 'VO', 'CoreHours'])
